@@ -184,7 +184,7 @@ p {
 </form>
 
 <datalist id="produtos"></datalist>
-<p style="color: #5e5e5e;">Apos registar todos os produtos aguarde a confirmação da mesma. Obrigado</p>
+<p style="color: #5e5e5e;">👉Apos registar todos os produtos aguarde a confirmação da mesma. Obrigado</p>
 <br>
 <p id="msg"></p>
 <br>
@@ -261,7 +261,7 @@ form.addEventListener("submit", e => {
   Promise.all(promessas)
     .then(resultados => {
       if(resultados.every(r => r === "OK")){
-        msg.innerText = "Todos os produtos foram registados!";
+        msg.innerText = "Todos os produtos foram registados!👍";
         // limpa apenas produtos
         linhas.forEach((linha,i)=>{
           if(i>0) linha.remove();
@@ -281,6 +281,7 @@ form.addEventListener("submit", e => {
 
 </body>
 </html>
+
 
 
 
