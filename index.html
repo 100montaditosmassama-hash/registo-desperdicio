@@ -169,7 +169,7 @@ p {
   <div id="produtosContainer">
 	<div class="produtoLinha">
 	  <input list="produtos" name="produto" placeholder="Produto" required style="flex:3;">
-	  <input type="number" step="0.01" name="quantidade" placeholder="Qtd" required style="flex:1; max-width:70px;">
+	  <input type="number" step="0.001" name="quantidade" placeholder="Qtd" required style="flex:1; max-width:70px;">
 	  <select name="unidade" required style="flex:1; max-width:70px;">
 		<option value="">Unidade</option>
 		<option value="Kg">Kg</option>
@@ -213,7 +213,7 @@ addProdutoBtn.addEventListener("click", () => {
   novaLinha.classList.add("produtoLinha");
   novaLinha.innerHTML = `
     <input list="produtos" name="produto" placeholder="Produto" required>
-    <input type="number" step="0.01" name="quantidade" placeholder="Qtd" required>
+    <input type="number" step="0.001" name="quantidade" placeholder="Qtd" required>
     <select name="unidade" required>
       <option value="">Unidade</option>
       <option value="Kg">Kg</option>
@@ -279,6 +279,7 @@ form.addEventListener("submit", e => {
 
 </body>
 </html>
+
 
 
 
