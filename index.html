@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Registo de Desperdício</title>
+<style>
+/* RESET BÁSICO */
+* {
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f2f4f8;
+  margin: 0;
+  padding: 15px;
+  color: #1f2937;
+}
+
+/* CARD CENTRAL */
+form {
+  background: #ffffff;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* TÍTULOS */
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #0b57d0;
+}
+
+/* INPUTS GERAIS */
+input,
+select,
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #0b57d0;
+  box-shadow: 0 0 0 2px rgba(11,87,208,0.15);
+}
+
+/* LINHA PRODUTO */
+.produtoLinha {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.produtoLinha input[name="produto"] {
+  flex: 100%;
+}
+
+.produtoLinha input[name="quantidade"],
+.produtoLinha select[name="unidade"] {
+  flex: 1;
+  min-width: 90px;
+}
+
+/* BOTÕES */
+button {
+  background: #0b57d0;
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #0948ad;
+}
+
+#addProduto {
+  background: #e5e7eb;
+  color: #111827;
+  margin-top: 15px;
+}
+
+#addProduto:hover {
+  background: #d1d5db;
+}
+
+/* MENSAGEM */
+#msg {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+/* FOOTER */
+p {
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* TABLET E DESKTOP */
+@media (min-width: 600px) {
+  .produtoLinha {
+    flex-wrap: nowrap;
+  }
+
+  .produtoLinha input[name="produto"] {
+    flex: 3;
+  }
+
+  .produtoLinha input[name="quantidade"],
+  .produtoLinha select[name="unidade"] {
+    flex: 1;
+    max-width: 90px;
+  }
+}
+
+/* LOGOTIPO */
+.logo-container {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.logo-container img {
+  max-width: 180px;
+  width: 60%;
+  height: auto;
+}
+
+
+@media (min-width: 768px) {
+  .logo-container img {
+    max-width: 220px;
+  }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="logo-container">
+  <img src="logo.png" alt="Logotipo da Empresa">
+</div>
+
+<h2>Registo de Desperdício</h2>
+
+<form id="formDesperdicio">
+  <input type="password" name="pin" placeholder="PIN do operador" required>
+  <select name="turno" required>
+    <option value="">Selecione o turno</option>
+    <option value="Manhã">Manhã</option>
+    <option value="Tarde">Tarde</option>
+    <option value="Noite">Noite</option>
+  </select>
+
+  <div id="produtosContainer">
+	<div class="produtoLinha">
+	  <input list="produtos" name="produto" placeholder="Produto" required style="flex:3;">
+	  <input type="number" step="0.01" name="quantidade" placeholder="Qtd" required style="flex:1; max-width:70px;">
+	  <select name="unidade" required style="flex:1; max-width:70px;">
+		<option value="">Unidade</option>
+		<option value="Kg">Kg</option>
+		<option value="L">L</option>
+		<option value="Unid">Unid</option>
+	  </select>
+	</div>
+  </div>
+
+  <button type="button" id="addProduto">Adicionar outro produto</button>
+  <button type="submit">Registar Todos Produtos</button>
+</form>
+
+<datalist id="produtos"></datalist>
+<p id="msg"></p>
+<br>
+<p style="color: #5e5e5e;">By ®</p>
+
+<script>
+const url = "";
+const produtosContainer = document.getElementById("produtosContainer");
+const addProdutoBtn = document.getElementById("addProduto");
+const form = document.getElementById("formDesperdicio");
+const msg = document.getElementById("msg");
+
+// Carregar produtos do Google Sheets
+fetch(url + "?produtos=1")
+  .then(res => res.json())
+  .then(produtos => {
+    produtos.forEach(p => {
+      const option = document.createElement("option");
+      option.value = p;
+      document.getElementById("produtos").appendChild(option);
+    });
+  })
+  .catch(() => msg.innerText = "Erro ao carregar produtos");
+
+// Adicionar linha de produto
+addProdutoBtn.addEventListener("click", () => {
+  const novaLinha = document.createElement("div");
+  novaLinha.classList.add("produtoLinha");
+  novaLinha.innerHTML = `
+    <input list="produtos" name="produto" placeholder="Produto" required>
+    <input type="number" step="0.01" name="quantidade" placeholder="Qtd" required>
+    <select name="unidade" required>
+      <option value="">Unidade</option>
+      <option value="Kg">Kg</option>
+      <option value="L">L</option>
+      <option value="Unid">Unid</option>
+    </select>
+  `;
+  produtosContainer.appendChild(novaLinha);
+});
+
+// Enviar todos os produtos
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  msg.innerText = "";
+
+  const pin = form.querySelector('input[name="pin"]').value.trim();
+  const turno = form.querySelector('select[name="turno"]').value;
+  const linhas = document.querySelectorAll(".produtoLinha");
+  let promessas = [];
+
+  linhas.forEach(linha => {
+    const produto = linha.querySelector('input[name="produto"]').value.trim();
+    const quantidade = linha.querySelector('input[name="quantidade"]').value.trim();
+    const unidade = linha.querySelector('select[name="unidade"]').value;
+
+    if(!produto || !quantidade || !unidade) return;
+
+    const params = new URLSearchParams();
+    params.append("pin", pin);
+    params.append("turno", turno);
+    params.append("produto", produto);
+    params.append("quantidade", quantidade);
+    params.append("unidade", unidade);
+
+    promessas.push(fetch(url, { method: "POST", body: params }).then(res => res.text()));
+  });
+
+  if(promessas.length === 0){
+    msg.innerText = "Preencha pelo menos um produto!";
+    return;
+  }
+
+  Promise.all(promessas)
+    .then(resultados => {
+      if(resultados.every(r => r === "OK")){
+        msg.innerText = "Todos os produtos foram registados!";
+        // limpa apenas produtos
+        linhas.forEach((linha,i)=>{
+          if(i>0) linha.remove();
+          else {
+            linha.querySelector('input[name="produto"]').value = "";
+            linha.querySelector('input[name="quantidade"]').value = "";
+            linha.querySelector('select[name="unidade"]').value = "";
+          }
+        });
+      } else {
+        msg.innerText = "Erro em algum produto: " + resultados.join(", ");
+      }
+    })
+    .catch(err => msg.innerText = "Erro: " + err.message);
+});
+</script>
+
+</body>
+</html>
